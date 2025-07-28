@@ -5,7 +5,9 @@
       <h2>{{ item.title }}</h2>
     </div>
     <div v-else-if="item.classes == '选择题'" class="question">
-      <h3>{{ item.title }}</h3>
+      <h3>{{ qtitle }}</h3>
+      <VCodeBlock :lang="selectedLanguage" v-if="hascode" :code="codeSnippet" prismjs/>
+     
       <ul v-if="item.nowrap" style="white-space: nowrap">
         <li
           v-for="(opt, idx) in item.options"
@@ -22,19 +24,35 @@
     </div>
     <div v-else class="question">
       <h3>{{ item.title }}</h3>
+      <VCodeBlock :lang="selectedLanguage" v-if="hascode" :code="codeSnippet" prismjs/>
       <div style="height: 360px" v-if="isPrint"></div>
-      <div class="answer" v-html="'参考答案：' + item.answer"></div>
+      <div class="answer" v-html="'参考答案：' + item.answer">      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue';
+import VCodeBlock from '@wdns/vue-code-block';
 const isPrint = ref(false);
 const props = defineProps({
   item: Object,
   eventKey: Boolean, //是否显示答案的事件
 });
+const selectedLanguage = ref("javascript")
+const codeSnippet = ref("")
+const hascode = ref(false)
+const qtitle = ref(props.item.title)
+const regex1 = /^(.*?)\s*<code\s+([a-zA-Z]+)\s*>([\s\S]*?)<\/code>\s*$/;
+console.log(props.item.title)
+const matches = props.item.title.match(regex1);
+console.log(matches)
+if (matches) {
+  hascode.value=true
+  qtitle.value = matches[1]; // "请问把大象装进冰箱可以分几步？"
+ selectedLanguage.value = matches[2]; // "javascript"
+  codeSnippet.value = matches[3];     // "const s=10"
+}
 watch(
   () => props.eventKey,
   () => {
