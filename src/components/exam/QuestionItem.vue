@@ -5,8 +5,8 @@
       <h2>{{ item.title }}</h2>
     </div>
     <div v-else-if="item.classes == '选择题'" class="question">
-      <h3>{{ qtitle }}</h3>
-      <VCodeBlock :lang="selectedLanguage" v-if="hascode" :code="codeSnippet" prismjs/>
+      <pre style="font-size: 1.17em; font-weight: bold; margin: 1em 0;">{{ qtitle }}</pre>
+      <VCodeBlock :lang="selectedLanguage" v-if="hascode" :code="codeSnippet" theme="Solarizedlight" prismjs/>
      
       <ul v-if="item.nowrap" style="white-space: nowrap">
         <li
@@ -20,13 +20,14 @@
       <ul v-else>
         <li v-for="(opt, idx) in item.options" :key="idx">{{ opt }}</li>
       </ul>
-      <p class="answer">参考答案：{{ item.answer }}</p>
+      <pre class="answer">参考答案：{{ item.answer }}</pre>
     </div>
     <div v-else class="question">
-      <h3>{{ item.title }}</h3>
+      <pre style="font-size: 1.17em; font-weight: bold; margin: 1em 0;">{{ item.title }}</pre>
       <VCodeBlock :lang="selectedLanguage" v-if="hascode" :code="codeSnippet" prismjs/>
       <div style="height: 360px" v-if="isPrint"></div>
-      <div class="answer" v-html="'参考答案：' + item.answer">      </div>
+      <pre style="font-size: 1.17em; font-weight: bold; margin: 1em 0;" v-if="qtitle1">{{ qtitle1}}</pre>
+      <pre class="answer">  参考答案：{{ item.answer }}    </pre>
     </div>
   </div>
 </template>
@@ -43,7 +44,8 @@ const selectedLanguage = ref("javascript")
 const codeSnippet = ref("")
 const hascode = ref(false)
 const qtitle = ref(props.item.title)
-const regex1 = /^(.*?)\s*<code\s+([a-zA-Z]+)\s*>([\s\S]*?)<\/code>\s*$/;
+const qtitle1 = ref('')
+const regex1 = /^(.*?)\s*<MyCode\s+([a-zA-Z]+)\s*>([\s\S]*?)<\/MyCode>\s*(.*?)$/;
 console.log(props.item.title)
 const matches = props.item.title.match(regex1);
 console.log(matches)
@@ -52,6 +54,9 @@ if (matches) {
   qtitle.value = matches[1]; // "请问把大象装进冰箱可以分几步？"
  selectedLanguage.value = matches[2]; // "javascript"
   codeSnippet.value = matches[3];     // "const s=10"
+  if(matches.lenght>4){
+    qtitle1.value=matches[4];
+  }
 }
 watch(
   () => props.eventKey,

@@ -2,17 +2,9 @@
   <div>
     <div id="mask" class="mask" :class="{ hidden: maskHidenFlag }"></div>
     <div class="myexam">
-      <ConfigMap
-        v-if="showFlag"
-        :configinfo="configInfo"
-        @createtestpaper="handleMessage"
-      ></ConfigMap>
+      <ConfigMap v-if="showFlag" :configinfo="configInfo" @createtestpaper="handleMessage"></ConfigMap>
       <div v-else>
-        <A4Paper
-          :items="questions"
-          :renderWrapper="QuestionItem"
-          @backtoconfig="handleMessage('back')"
-        />
+        <A4Paper :items="questions" :renderWrapper="QuestionItem" @backtoconfig="handleMessage('back')" />
       </div>
     </div>
   </div>
@@ -183,20 +175,29 @@ const handleMessage = (msg) => {
       questions.value.push(...selectedQuestions);
       icount++;
     }
-    if (msg.info.option3.checked && level_data['场景题']) {
+    if (msg.info.option3.checked && level_data['场景题'] || (window.myexamdata["通用"] && window.myexamdata["通用"]["场景题"])) {
       questions.value.push({
         title: no_list[icount] + '、场景题', //题目
         classes: '题目分类标记',
       });
       const questionBanks = [];
       msg.info.selectedLanguages.forEach((item) => {
-        if (
+        const t1 = []
+        if (level_data['场景题'] &&
           level_data['场景题'][item] &&
           level_data['场景题'][item].length > 0
         ) {
-          questionBanks.push(level_data['场景题'][item]);
+          t1.push(...level_data['场景题'][item]);
         }
+        if (window.myexamdata["通用"] && window.myexamdata["通用"]["场景题"] && window.myexamdata["通用"]["场景题"][item] && window.myexamdata["通用"]["场景题"][item].length > 0) {
+          t1.push(...window.myexamdata["通用"]["场景题"][item])
+        }
+        questionBanks.push(t1);
       });
+      if (window.myexamdata["通用"] && window.myexamdata["通用"]["场景题"] && window.myexamdata["通用"]["场景题"]["通用"] && window.myexamdata["通用"]["场景题"]["通用"].length > 0) {
+        questionBanks.push(window.myexamdata["通用"]["场景题"]["通用"])
+      }
+
       const selectedQuestions = getBalancedRandomQuestions(
         questionBanks,
         msg.info.option3.count
@@ -204,20 +205,13 @@ const handleMessage = (msg) => {
       questions.value.push(...selectedQuestions);
       icount++;
     }
-    if (msg.info.option4.checked && level_data['行为题']) {
+    if (msg.info.option4.checked && window.myexamdata["通用"] && window.myexamdata["通用"]['行为题']) {
       questions.value.push({
         title: no_list[icount] + '、行为题', //题目
         classes: '题目分类标记',
       });
       const questionBanks = [];
-      msg.info.selectedLanguages.forEach((item) => {
-        if (
-          level_data['行为题'][item] &&
-          level_data['行为题'][item].length > 0
-        ) {
-          questionBanks.push(level_data['行为题'][item]);
-        }
-      });
+      questionBanks.push(window.myexamdata["通用"]['行为题']["通用"]);
       const selectedQuestions = getBalancedRandomQuestions(
         questionBanks,
         msg.info.option4.count
