@@ -175,7 +175,10 @@ const handleMessage = (msg) => {
       questions.value.push(...selectedQuestions);
       icount++;
     }
-    if (msg.info.option3.checked && level_data['场景题'] || (window.myexamdata["通用"] && window.myexamdata["通用"]["场景题"])) {
+    if (msg.info.option3.checked && (level_data['场景题']||(window.myexamdata["通用"]&&window.myexamdata["通用"]['场景题']))) {
+      questions.value.push({
+        classes: '强制分页标记',
+      });
       questions.value.push({
         title: no_list[icount] + '、场景题', //题目
         classes: '题目分类标记',
@@ -189,14 +192,15 @@ const handleMessage = (msg) => {
         ) {
           t1.push(...level_data['场景题'][item]);
         }
-        if (window.myexamdata["通用"] && window.myexamdata["通用"]["场景题"] && window.myexamdata["通用"]["场景题"][item] && window.myexamdata["通用"]["场景题"][item].length > 0) {
-          t1.push(...window.myexamdata["通用"]["场景题"][item])
-        }
         questionBanks.push(t1);
+        const t2 = []
+        if (window.myexamdata["通用"]&&window.myexamdata["通用"]['场景题']&&
+        window.myexamdata["通用"]['场景题'][item]&&window.myexamdata["通用"]['场景题'][item].length > 0
+        ) {
+          t2.push(...window.myexamdata["通用"]['场景题'][item]);
+        }
+        questionBanks.push(t2);
       });
-      if (window.myexamdata["通用"] && window.myexamdata["通用"]["场景题"] && window.myexamdata["通用"]["场景题"]["通用"] && window.myexamdata["通用"]["场景题"]["通用"].length > 0) {
-        questionBanks.push(window.myexamdata["通用"]["场景题"]["通用"])
-      }
 
       const selectedQuestions = getBalancedRandomQuestions(
         questionBanks,
@@ -206,6 +210,9 @@ const handleMessage = (msg) => {
       icount++;
     }
     if (msg.info.option4.checked && window.myexamdata["通用"] && window.myexamdata["通用"]['行为题']) {
+      questions.value.push({
+        classes: '强制分页标记',
+      });
       questions.value.push({
         title: no_list[icount] + '、行为题', //题目
         classes: '题目分类标记',

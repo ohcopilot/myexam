@@ -4,19 +4,9 @@
       <button @click="doBack">返回</button>
       <button @click="doPrint">打印</button>
     </div>
-    <div
-      class="a4-page"
-      v-for="(page, pageIndex) in paginatedItems"
-      :key="pageIndex"
-    >
+    <div class="a4-page" v-for="(page, pageIndex) in paginatedItems" :key="pageIndex">
       <div class="page-body">
-        <component
-          :is="renderWrapper"
-          v-for="(item, index) in page"
-          :key="index"
-          :item="item"
-          :event-key="eventKey"
-        />
+        <component :is="renderWrapper" v-for="(item, index) in page" :key="index" :item="item" :event-key="eventKey" />
       </div>
       <div class="page-footer">
         第 {{ pageIndex + 1 }} 页 / 共 {{ paginatedItems.length }} 页
@@ -40,14 +30,20 @@ const broadcast = (flag) => {
 };
 const doBack = () => {
   emit('backtoconfig', { text: '来自子组件的消息', time: new Date() });
+  setTimeout(() => {
+    buildPages()
+  }, 1000);
 };
 
 const doPrint = () => {
   showButton.value = false;
   broadcast(false);
   setTimeout(() => {
-    window.print();
-    showButton.value = true;
+    buildPages()
+    setTimeout(() => {
+      window.print();
+      showButton.value = true;
+    }, 1000);
   }, 1000);
 };
 const paginatedItems = ref([]);

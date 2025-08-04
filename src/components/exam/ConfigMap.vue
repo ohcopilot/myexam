@@ -147,6 +147,26 @@
               />
               <label for="optionA9" class="shrink-label">云计算与Devops</label>
             </div>
+            <div class="input-item">
+              <input
+                type="checkbox"
+                id="optionA10"
+                name="options"
+                v-model="formdata.selectedLanguages"
+                value="安卓开发"
+              />
+              <label for="optionA10" class="shrink-label">安卓开发</label>
+            </div>
+            <div class="input-item">
+              <input
+                type="checkbox"
+                id="optionA11"
+                name="options"
+                v-model="formdata.selectedLanguages"
+                value="Groovy开发"
+              />
+              <label for="optionA11" class="shrink-label">Groovy开发</label>
+            </div>
           </div>
           <div
             class="error-message"

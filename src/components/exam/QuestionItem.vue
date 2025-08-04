@@ -27,7 +27,10 @@
       <VCodeBlock :lang="selectedLanguage" v-if="hascode" :code="codeSnippet" prismjs/>
       <div style="height: 360px" v-if="isPrint"></div>
       <pre style="font-size: 1.17em; font-weight: bold; margin: 1em 0;" v-if="qtitle1">{{ qtitle1}}</pre>
-      <pre class="answer">  参考答案：{{ item.answer }}    </pre>
+      
+      <pre v-if="item.classes == '编码题'" class="answer">  参考答案：{{ item.answer }}    </pre>
+      <pre v-else-if="item.classes == '行为题'" class="answer">  参考答案：{{ item.remark }}    </pre>
+
     </div>
   </div>
 </template>
